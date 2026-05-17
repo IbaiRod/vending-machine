@@ -8,6 +8,7 @@ import com.vendingMachine.service.VendingMachineService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -50,7 +51,7 @@ public class VendingMachineController {
 
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping(value="/purchase/{purchaseId}")
-    public Double getPurchaseRefund(@PathVariable Integer purchaseId) {
+    public BigDecimal getPurchaseRefund(@PathVariable Integer purchaseId) {
         return vendingMachineService.getPurchaseRefund(purchaseId);
     }
 

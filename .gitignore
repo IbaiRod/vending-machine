@@ -13,5 +13,13 @@
 # Generated Sources
 target
 
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
 # IDE Files
 .idea
+
+# Local Gradle config (machine-specific JDK path)
+gradle.properties

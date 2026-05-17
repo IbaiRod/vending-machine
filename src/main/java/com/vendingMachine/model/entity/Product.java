@@ -1,22 +1,22 @@
 package com.vendingMachine.model.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import javax.persistence.*;
+import jakarta.persistence.*;
+import lombok.*;
 import java.math.BigDecimal;
 
-@Data
-@Table
 @Entity
-@AllArgsConstructor
+@Table
+@Getter
+@Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Product {
 
-    @Id()
+    @Id
+    @EqualsAndHashCode.Include
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

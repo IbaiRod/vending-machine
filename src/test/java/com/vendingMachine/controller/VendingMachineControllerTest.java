@@ -51,7 +51,7 @@ class VendingMachineControllerTest {
     @Test
     void itShouldReturnProduct() throws Exception {
         var purchaseResponse = Utils.getPurchaseResponse();
-        when(vendingMachineService.buyProccess(anyInt(), anyInt()))
+        when(vendingMachineService.buyProcess(anyInt(), anyInt()))
                 .thenReturn(purchaseResponse);
 
         assertThat(vendingMachineController.buyProduct(1, 1))

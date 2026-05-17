@@ -9,20 +9,23 @@ import com.vendingMachine.model.entity.Purchase;
 import com.vendingMachine.model.repository.ProductRepository;
 import com.vendingMachine.model.repository.PurchaseRepository;
 import com.vendingMachine.service.VendingMachineService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Predicate;
 
 @Service
 public class VendingMachineServiceImpl implements VendingMachineService {
 
-    @Autowired
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final PurchaseRepository purchaseRepository;
 
-    @Autowired
-    PurchaseRepository purchaseRepository;
+    public VendingMachineServiceImpl(ProductRepository productRepository, PurchaseRepository purchaseRepository) {
+        this.productRepository = productRepository;
+        this.purchaseRepository = purchaseRepository;
+    }
 
     @Override
     public List<Product> getProductList() {
@@ -34,18 +37,19 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     public Purchase sumCoins(PurchaseRequest purchaseRequest) {
 
         var sum = purchaseRequest.getListCoins().stream()
-                .reduce(0.0, Double::sum);
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         var purchase = Purchase.builder()
                 .amount(sum).build();
 
         purchaseRepository.save(purchase);
-        
+
         return purchase;
     }
 
     @Override
-    public PurchaseResponse buyProccess(Integer idProduct, Integer idPurchase) {
+    @Transactional
+    public PurchaseResponse buyProcess(Integer idProduct, Integer idPurchase) {
         
         var purchase = purchaseRepository.findById(Long.valueOf(idPurchase))
                 .orElseThrow(() -> new EntityNotFoundException("Purchase", String.valueOf(idPurchase)));
@@ -56,10 +60,10 @@ public class VendingMachineServiceImpl implements VendingMachineService {
 
         product.restQuantity();
         productRepository.save(product);
-        
+
         return PurchaseResponse.builder()
                 .product(product)
-                .userAmountLeft(purchase.getAmount() - product.getPrice())
+                .userAmountLeft(purchase.getAmount().subtract(product.getPrice()))
                 .build();
     }
 
@@ -71,7 +75,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public Double getPurchaseRefund(Integer purchaseId) {
+    public BigDecimal getPurchaseRefund(Integer purchaseId) {
 
         var purchase = purchaseRepository.findById(Long.valueOf(purchaseId))
                 .orElseThrow(() -> new EntityNotFoundException("Purchase", String.valueOf(purchaseId)));
@@ -88,7 +92,7 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     private static Predicate<Product> isGreaterAmountThanPrice(Purchase purchase) {
-        return product -> purchase.getAmount() >= product.getPrice();
+        return product -> purchase.getAmount().compareTo(product.getPrice()) >= 0;
     }
     
 

@@ -2,6 +2,7 @@ package com.vendingMachine.service.impl;
 
 import com.vendingMachine.Utils;
 import com.vendingMachine.exception.EntityNotFoundException;
+import com.vendingMachine.exception.UserExceptions;
 import com.vendingMachine.model.entity.Product;
 import com.vendingMachine.model.entity.Purchase;
 import com.vendingMachine.model.repository.ProductRepository;
@@ -12,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +40,7 @@ class VendingMachineServiceImplTest {
     void getProductList_ShouldReturnAllProducts() {
         List<Product> expectedProducts = Utils.getProductList();
         when(productRepository.findAll()).thenReturn(expectedProducts);
-        
+
         List<Product> result = vendingMachineService.getProductList();
 
         assertThat(result).isEqualTo(expectedProducts);
@@ -48,16 +50,17 @@ class VendingMachineServiceImplTest {
     @Test
     void sumCoins_ShouldCalculateTotalAndSavePurchase() {
         var purchaseRequest = Utils.getPurchaseRequest();
-        purchaseRequest.setListCoins(List.of(1.0, 2.0, 0.5));
+        purchaseRequest.setListCoins(List.of(
+                new BigDecimal("1.0"),
+                new BigDecimal("2.0"),
+                new BigDecimal("0.5")
+        ));
 
-        var expectedPurchase = Purchase.builder()
-                .amount(3.5)
-                .build();
-        when(purchaseRepository.save(any(Purchase.class))).thenReturn(expectedPurchase);
-        
+        when(purchaseRepository.save(any(Purchase.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
         Purchase result = vendingMachineService.sumCoins(purchaseRequest);
 
-        assertThat(result.getAmount()).isEqualTo(3.5);
+        assertThat(result.getAmount()).isEqualByComparingTo(new BigDecimal("3.5"));
         verify(purchaseRepository).save(any(Purchase.class));
     }
 
@@ -65,21 +68,21 @@ class VendingMachineServiceImplTest {
     void buyProcess_ShouldSucceedWithValidPurchase() {
         var purchase = Purchase.builder()
                 .id(1L)
-                .amount(10.0)
+                .amount(new BigDecimal("10.0"))
                 .build();
 
         var product = Product.builder()
                 .id(1L)
-                .price(5.0)
+                .price(new BigDecimal("5.0"))
                 .quantity(10)
                 .build();
 
         when(purchaseRepository.findById(1L)).thenReturn(Optional.of(purchase));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        var result = vendingMachineService.buyProccess(1, 1);
-        
-        assertThat(result.getUserAmountLeft()).isEqualTo(5.0);
+        var result = vendingMachineService.buyProcess(1, 1);
+
+        assertThat(result.getUserAmountLeft()).isEqualByComparingTo(new BigDecimal("5.0"));
         assertThat(result.getProduct().getQuantity()).isEqualTo(9);
     }
 
@@ -87,40 +90,40 @@ class VendingMachineServiceImplTest {
     void buyProcess_ShouldFailWhenInsufficientFunds() {
         var purchase = Purchase.builder()
                 .id(1L)
-                .amount(2.0)
+                .amount(new BigDecimal("2.0"))
                 .build();
 
         var product = Product.builder()
                 .id(1L)
-                .price(5.0)
+                .price(new BigDecimal("5.0"))
                 .quantity(10)
                 .build();
 
         when(purchaseRepository.findById(1L)).thenReturn(Optional.of(purchase));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(EntityNotFoundException.class,
-                () -> vendingMachineService.buyProccess(1, 1));
+        assertThrows(UserExceptions.class,
+                () -> vendingMachineService.buyProcess(1, 1));
     }
 
     @Test
     void buyProcess_ShouldFailWhenOutOfStock() {
         var purchase = Purchase.builder()
                 .id(1L)
-                .amount(10.0)
+                .amount(new BigDecimal("10.0"))
                 .build();
 
         var product = Product.builder()
                 .id(1L)
-                .price(5.0)
+                .price(new BigDecimal("5.0"))
                 .quantity(0)
                 .build();
 
         when(purchaseRepository.findById(1L)).thenReturn(Optional.of(purchase));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(EntityNotFoundException.class,
-                () -> vendingMachineService.buyProccess(1, 1));
+        assertThrows(UserExceptions.class,
+                () -> vendingMachineService.buyProcess(1, 1));
     }
 
     @Test
@@ -128,16 +131,16 @@ class VendingMachineServiceImplTest {
         when(purchaseRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
-                () -> vendingMachineService.buyProccess(1, 1));
+                () -> vendingMachineService.buyProcess(1, 1));
     }
 
     @Test
     void getPurchaseById_WhenPurchaseExists_ShouldReturnPurchase() {
         Purchase expectedPurchase = Purchase.builder()
                 .id(1L)
-                .amount(10.0)
+                .amount(new BigDecimal("10.0"))
                 .build();
-        
+
         when(purchaseRepository.findById(1L))
                 .thenReturn(Optional.of(expectedPurchase));
 
@@ -153,7 +156,7 @@ class VendingMachineServiceImplTest {
         when(purchaseRepository.findById(1L))
                 .thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, 
+        assertThrows(EntityNotFoundException.class,
                 () -> vendingMachineService.getPurchaseById(1));
         verify(purchaseRepository).findById(1L);
     }

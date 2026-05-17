@@ -20,3 +20,6 @@ build/
 
 # IDE Files
 .idea
+
+# Local Gradle config (machine-specific JDK path)
+gradle.properties

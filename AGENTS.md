@@ -14,6 +14,7 @@ Tests are pure Mockito unit tests (`@ExtendWith(MockitoExtension.class)`, no `@S
 - **Postman collection** (`src/main/resources/Dispenser.postman_collection.json`) uses `/dispenser/` paths but the controller uses `/vendingMachine/`. Stale.
 - **No production database** configured. H2 is test-scoped only. JPA entities + startup seed data (`VendingMachineApplication.initData`) will fail at runtime without a datasource.
 - **Default port** is 8080 (the `server.port` in `application.properties` is commented out).
+- **Java 21 required** for building and running. The system JDK is `21.0.10` and Gradle 8.7 handles it directly (`java {}` block in `build.gradle`).
 
 ## Conventions
 
@@ -25,4 +26,4 @@ Tests are pure Mockito unit tests (`@ExtendWith(MockitoExtension.class)`, no `@S
 
 ## Stack
 
-Spring Boot 2.4.5 / Java 10 / Gradle / Lombok / JPA + H2 (test only) / JUnit 5 + Mockito + AssertJ
+Spring Boot 3.2.5 / Java 21 / Gradle / Lombok / JPA + H2 (test only) / JUnit 5 + Mockito + AssertJ

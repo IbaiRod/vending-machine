@@ -2,6 +2,7 @@ package com.vendingMachine.service.impl;
 
 import com.vendingMachine.Utils;
 import com.vendingMachine.exception.EntityNotFoundException;
+import com.vendingMachine.exception.UserExceptions;
 import com.vendingMachine.model.entity.Product;
 import com.vendingMachine.model.entity.Purchase;
 import com.vendingMachine.model.repository.ProductRepository;
@@ -77,7 +78,7 @@ class VendingMachineServiceImplTest {
         when(purchaseRepository.findById(1L)).thenReturn(Optional.of(purchase));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        var result = vendingMachineService.buyProccess(1, 1);
+        var result = vendingMachineService.buyProcess(1, 1);
         
         assertThat(result.getUserAmountLeft()).isEqualTo(5.0);
         assertThat(result.getProduct().getQuantity()).isEqualTo(9);
@@ -99,8 +100,8 @@ class VendingMachineServiceImplTest {
         when(purchaseRepository.findById(1L)).thenReturn(Optional.of(purchase));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(EntityNotFoundException.class,
-                () -> vendingMachineService.buyProccess(1, 1));
+        assertThrows(UserExceptions.class,
+                () -> vendingMachineService.buyProcess(1, 1));
     }
 
     @Test
@@ -119,8 +120,8 @@ class VendingMachineServiceImplTest {
         when(purchaseRepository.findById(1L)).thenReturn(Optional.of(purchase));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
 
-        assertThrows(EntityNotFoundException.class,
-                () -> vendingMachineService.buyProccess(1, 1));
+        assertThrows(UserExceptions.class,
+                () -> vendingMachineService.buyProcess(1, 1));
     }
 
     @Test
@@ -128,7 +129,7 @@ class VendingMachineServiceImplTest {
         when(purchaseRepository.findById(anyLong())).thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class,
-                () -> vendingMachineService.buyProccess(1, 1));
+                () -> vendingMachineService.buyProcess(1, 1));
     }
 
     @Test

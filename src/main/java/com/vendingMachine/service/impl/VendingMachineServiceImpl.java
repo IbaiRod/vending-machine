@@ -9,8 +9,8 @@ import com.vendingMachine.model.entity.Purchase;
 import com.vendingMachine.model.repository.ProductRepository;
 import com.vendingMachine.model.repository.PurchaseRepository;
 import com.vendingMachine.service.VendingMachineService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -18,11 +18,13 @@ import java.util.function.Predicate;
 @Service
 public class VendingMachineServiceImpl implements VendingMachineService {
 
-    @Autowired
-    ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final PurchaseRepository purchaseRepository;
 
-    @Autowired
-    PurchaseRepository purchaseRepository;
+    public VendingMachineServiceImpl(ProductRepository productRepository, PurchaseRepository purchaseRepository) {
+        this.productRepository = productRepository;
+        this.purchaseRepository = purchaseRepository;
+    }
 
     @Override
     public List<Product> getProductList() {
@@ -45,7 +47,8 @@ public class VendingMachineServiceImpl implements VendingMachineService {
     }
 
     @Override
-    public PurchaseResponse buyProccess(Integer idProduct, Integer idPurchase) {
+    @Transactional
+    public PurchaseResponse buyProcess(Integer idProduct, Integer idPurchase) {
         
         var purchase = purchaseRepository.findById(Long.valueOf(idPurchase))
                 .orElseThrow(() -> new EntityNotFoundException("Purchase", String.valueOf(idPurchase)));

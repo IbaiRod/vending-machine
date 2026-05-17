@@ -13,7 +13,7 @@ public interface VendingMachineService {
     
     Purchase sumCoins(PurchaseRequest purchaseRequest);
 
-    PurchaseResponse buyProccess(Integer idProduct, Integer idPurchase);
+    PurchaseResponse buyProcess(Integer idProduct, Integer idPurchase);
 
     Purchase getPurchaseById(Integer purchaseId);
 

@@ -3,8 +3,8 @@
 ## Build & test
 
 ```sh
-mvn test                          # all tests
-mvn test -Dtest=VendingMachineServiceImplTest  # single test class
+./gradlew test                          # all tests
+./gradlew test --tests *VendingMachineServiceImplTest  # single test class
 ```
 
 Tests are pure Mockito unit tests (`@ExtendWith(MockitoExtension.class)`, no `@SpringBootTest`), so they run fast.
@@ -25,4 +25,4 @@ Tests are pure Mockito unit tests (`@ExtendWith(MockitoExtension.class)`, no `@S
 
 ## Stack
 
-Spring Boot 2.4.5 / Java 10 / Maven / Lombok / JPA + H2 (test only) / JUnit 5 + Mockito + AssertJ
+Spring Boot 2.4.5 / Java 10 / Gradle / Lombok / JPA + H2 (test only) / JUnit 5 + Mockito + AssertJ

@@ -1,10 +1,11 @@
 package com.vendingMachine;
 
-import com.vendingMachine.model.dto.PurchaseRequest;
-import com.vendingMachine.model.dto.PurchaseResponse;
-import com.vendingMachine.model.entity.Product;
-import com.vendingMachine.model.entity.Purchase;
+import com.vendingMachine.application.dto.PurchaseRequest;
+import com.vendingMachine.application.dto.PurchaseResponse;
+import com.vendingMachine.domain.model.Product;
+import com.vendingMachine.domain.model.Purchase;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class Utils {
@@ -14,18 +15,18 @@ public class Utils {
     }
 
     public static Product getProduct() {
-        return Product.builder().build();
+        return new Product(1L, "Coke", new BigDecimal("5.0"), 10);
     }
 
     public static Purchase getPurchase() {
-        return  Purchase.builder().build();
+        return new Purchase(1L, new BigDecimal("10.0"));
     }
 
     public static PurchaseRequest getPurchaseRequest() {
-        return PurchaseRequest.builder().build();
+        return new PurchaseRequest();
     }
 
     public static PurchaseResponse getPurchaseResponse() {
-        return PurchaseResponse.builder().build();
+        return new PurchaseResponse(getProduct(), BigDecimal.ZERO);
     }
 }

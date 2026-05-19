@@ -13,8 +13,8 @@ public class BeanConfiguration {
     @Bean
     public VendingMachineUseCase vendingMachineUseCase(
             ProductRepositoryPort productRepository,
-            PurchaseRepositoryPort purchaseRepository
-    ) {
+            PurchaseRepositoryPort purchaseRepository) {
+
         return new VendingMachineService(productRepository, purchaseRepository);
     }
 }

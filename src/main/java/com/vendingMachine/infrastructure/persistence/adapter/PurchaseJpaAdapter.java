@@ -21,19 +21,24 @@ public class PurchaseJpaAdapter implements PurchaseRepositoryPort {
 
     @Override
     public Purchase save(Purchase purchase) {
+
         var entity = mapper.toEntity(purchase);
+
         var saved = springRepository.save(entity);
+
         return mapper.toDomain(saved);
     }
 
     @Override
     public Optional<Purchase> findById(Long id) {
+
         return springRepository.findById(id)
                 .map(mapper::toDomain);
     }
 
     @Override
     public void deleteById(Long id) {
+
         springRepository.deleteById(id);
     }
 }

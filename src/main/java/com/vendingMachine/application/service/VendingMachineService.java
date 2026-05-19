@@ -33,15 +33,19 @@ public class VendingMachineService implements VendingMachineUseCase {
 
     @Override
     public Purchase insertMoney(PurchaseRequest request) {
+
         var total = request.getListCoins().stream()
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+
         var purchase = new Purchase(null, total);
+
         return purchaseRepository.save(purchase);
     }
 
     @Override
     @Transactional
     public PurchaseResponse buyProduct(Integer productId, Integer purchaseId) {
+
         var purchase = purchaseRepository.findById(purchaseId.longValue())
                 .orElseThrow(() -> new PurchaseNotFoundException(purchaseId.longValue()));
 
@@ -63,12 +67,14 @@ public class VendingMachineService implements VendingMachineUseCase {
 
     @Override
     public Purchase findPurchaseById(Integer purchaseId) {
+
         return purchaseRepository.findById(purchaseId.longValue())
                 .orElseThrow(() -> new PurchaseNotFoundException(purchaseId.longValue()));
     }
 
     @Override
     public BigDecimal refundPurchase(Integer purchaseId) {
+
         var purchase = purchaseRepository.findById(purchaseId.longValue())
                 .orElseThrow(() -> new PurchaseNotFoundException(purchaseId.longValue()));
 

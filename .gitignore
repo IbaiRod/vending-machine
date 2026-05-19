@@ -20,6 +20,7 @@ build/
 
 # IDE Files
 .idea
+.vscode/
 
 # Local Gradle config (machine-specific JDK path)
 gradle.properties

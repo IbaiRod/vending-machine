@@ -62,7 +62,9 @@ public class VendingMachineService implements VendingMachineUseCase {
         product.decreaseStock();
         productRepository.save(product);
 
-        return new PurchaseResponse(product, purchase.getAmount().subtract(product.getPrice()));
+        purchase.deduct(product.getPrice());
+        purchaseRepository.save(purchase);
+        return new PurchaseResponse(product, purchase.getAmount());
     }
 
     @Override

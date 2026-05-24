@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Purchase {
 
     private final Long id;
-    private final BigDecimal amount;
+    private BigDecimal amount;
 
     public Purchase(Long id, BigDecimal amount) {
         this.id = id;
@@ -19,6 +19,10 @@ public class Purchase {
 
     public BigDecimal getAmount() {
         return amount;
+    }
+
+    public void deduct(BigDecimal amount) {
+        this.amount = this.amount.subtract(amount);
     }
 
     @Override

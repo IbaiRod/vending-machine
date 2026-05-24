@@ -77,11 +77,13 @@ class VendingMachineServiceTest {
 
         when(purchaseRepository.findById(1L)).thenReturn(Optional.of(purchase));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        when(purchaseRepository.save(any(Purchase.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         var result = vendingMachineService.buyProduct(1, 1);
 
         assertThat(result.getUserAmountLeft()).isEqualByComparingTo(new BigDecimal("5.0"));
         assertThat(result.getProduct().getQuantity()).isEqualTo(9);
+        verify(purchaseRepository).save(any(Purchase.class));
     }
 
     @Test
